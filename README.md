@@ -10,7 +10,7 @@ Tokenizers are critical for large language models. However, existing methods:
 - do not **selectively utilize history** based on contextual relevance.
 
 To address these issues, we propose **SPEAK**, a gradient-based tokenizer that:
-- uses **spiking neurons** to model historical tokenization results;
+- integrates **spiking neurons** to model historical tokenization results;
 - introduces an **entropy-aware reset mechanism**:
   - **high-entropy tokens** = semantic isolation → hard reset (discard history);
   - **low-entropy tokens** = semantic continuity → soft reset (preserve relevant history).
