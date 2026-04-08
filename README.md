@@ -1,36 +1,46 @@
-# SPEAK: Spiking Neurons as an Entropy-Aware Tokenizer for Large Language Models
-
-Official implementation for the ACL ARR January 2026 submission.
+# [ACL-2026 Main] SPEAK: Spiking Neurons as an Entropy-Aware Tokenizer for Large Language Models
 
 ## 📖 Introduction
 
-Tokenizers play a critical role in large language model studies. Despite recent advances, existing tokenizers fail to **explicitly leverage historical tokenization results** when making subsequent token decisions, nor do they **selectively utilize such history** based on contextual relevance.
+This repository provides the official implementation of the [ACL-2026 paper](https://openreview.net/forum?id=N7hnj8HVDx).
+<img src="./img/method.jpg" width="100%" style="display: block; margin: 0 auto;">
 
-We propose **SPEAK**, a tokenizer that integrates spiking neurons to explicitly leverage historical tokenization results. Furthermore, we introduce an **entropy-aware reset mechanism** that selectively leverages history based on contextual relevance, which is determined by token-level entropy: High-entropy tokens are treated as contextual boundaries where **hard reset** discards irrelevant historical tokenization results; Low-entropy tokens between consecutive boundaries exhibit strong contextual relevance where scaled **soft reset** preserves and leverages relevant history.
+Tokenizers are critical for large language models. However, existing methods:
+- do not explicitly **leverage historical tokenization results**;
+- do not **selectively utilize history** based on contextual relevance.
+
+To address these issues, we propose **SPEAK**, a gradient-based tokenizer that:
+- uses **spiking neurons** to model historical tokenization results;
+- introduces an **entropy-aware reset mechanism**:
+  - **high-entropy tokens** = semantic isolation → hard reset (discard history);
+  - **low-entropy tokens** = semantic continuity → soft reset (preserve relevant history).
 
 Experiments on 2 language models and 5 datasets spanning 16 languages demonstrate superior cross-lingual adaptability with competitive performance and efficiency.
 
-<img src="./img/method.jpg" width="100%" style="display: block; margin: 0 auto;">
+
 
 ## ✨ Experimental Frameworks
 
 This repository contains two independent experimental frameworks: gradient-based tokenizer (GTok) and rule-based tokenizer (RTok).
 
 #### GTok Experiments (`GTok_Experiments/`)
-- **Purpose**: Comparison against state-of-the-art gradient-based tokenizers (MAGNET, DTP)
-- **Language Model**: Hourglass Transformer (lightweight model trained from scratch)
-- **Datasets**: `text8` (en), `cc-100` (en), `wiki40b` (en, fi, he, vi)
-- **Metrics**: Bits-per-character (BPC) ↓, Shortening factor (SF) ↑
-- **Key Result**: Achieves new SOTA with average BPC of 1.108 and SF of 4.32× across 6 language settings
+- **Purpose**: Compare with SOTA GToks (MAGNET, DTP)
+- **Model**: Hourglass Transformer trained from the scratch
+- **Datasets**: text8 (en), cc-100 (en), wiki40b (en, fi, he, vi)
+- **Metrics**: Bits-per-character (BPC) ↓, shortening factor (SF) ↑
+- **Result**: BPC 1.108, SF 4.32×
 
 #### RTok Experiments (`RTok_Experiments/`)
-- **Purpose**: Comparison against state-of-the-art rule-based tokenizers (DyTok, ZeTT)
-- **Language Model**: XLM-R (base, 270M parameters) with LoRA fine-tuning and hypernetwork integration
-- **Datasets**: 
-  - XNLI (13 languages for natural language inference)
-  - UNER (5 languages for named entity recognition)
-- **Metrics**: Accuracy (XNLI) / F1-score (UNER) ↑, Token sequence length reduction ↑
-- **Key Result**: Achieves 73.1% average accuracy on XNLI (+1.1% over DyTok) and 79.2% F1 on UNER (+1.1% over ZeTT), with 5.3%–13.4% efficiency gains
+- **Purpose**: Compare with SOTA RToks (DyTok, ZeTT)
+- **Model**: XLM-R (base, 270M) + LoRA
+- **Datasets**:
+  - XNLI (13 languages)
+  - UNER (5 languages)
+- **Metrics**: Accuracy / F1 ↑, token sequence length ↓  
+- **Result**:
+  - XNLI: 73.1% (+1.1%)
+  - UNER: 79.2% (+1.1%)
+  - Efficiency gain: 5.3%–13.4%
 
 ## 🛠️ Environment Setup
 
@@ -43,21 +53,25 @@ conda activate speak
 pip install -r requirements.txt
 ```
 
-## 🚀 Running Experiments
-
-### GTok Experiments
+## 🚀 Run Experiments
 
 ```bash
-cd GTok_Experiments
-python main.py
-```
-
-
-### RTok Experiments
-
-```bash
-cd RTok_Experiments
+cd GTok_Experiments # or RTok_Experiments
 python main.py
 ```
 
 All experimental configurations (datasets, hyperparameters, reset modes, etc.) are defined within the respective main.py files. Modify the configuration section in each main.py according to your experimental requirements.
+
+
+## 📄 Citation
+
+If you find this code helpful, we would appreciate it if you cite our paper:
+```bibtex
+@inproceedings{chen2026speak,
+    title = {{SPEAK}: {Spiking} {Neurons} as an {Entropy}-{Aware} {Tokenizer} for {Large} {Language} {Models}},
+    author = {Chen, Ming and Li, Wenyao and Liang, Chao and Gu, Shi and Lin, Peng and Ma, De and Tang, Huajin and Zheng, Qian and Pan, Gang},
+    booktitle={Proceedings of the 64th Annual Meeting of the Association 748 for Computational Linguistics.},
+    year={2026},
+    url={https://openreview.net/forum?id=N7hnj8HVDx}
+}
+```
